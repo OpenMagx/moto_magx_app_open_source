@@ -1,0 +1,398 @@
+// E8 MpkgBox source file by ilove3d
+// keep author information if you redistribute this program
+// Nov. 2008
+// http://moto.it168.com
+#include "ExtremeGUI.h"
+
+char exec_buffer[512];
+char *locale_buf=NULL;
+
+	QString AppPath;
+	QString txt_view_path,p7z_path,skin_path;
+	QString FT_PLEASCHOOSE;
+	QString POP_PLEASEWAIT;
+	QString POP_NO_7Z;
+	QString POP_ERROR;
+	QString POP_BIGFILE_TITLE,POP_BIGFILE_TEXT;
+	QString POP_SCRIPT_OPTINON, FT_RUN, FT_VIEW;
+	QString POP_SKIN, CONFIRM_INSTALL_SKIN, NOTE_INSTALL_SKIN_FINISH;
+	QString POP_FONT_OPTINON, FT_PREVIEW, FT_TEST, FT_MOUNT, NOTE_CP_FONT_ERROR;
+
+//char *app_basedir=qApp->argv()[0];
+//lc * lcres = new lc(app_basedir);
+
+
+
+QString ctr(const char*ChineseString)
+{
+        QTextCodec* gbkstr = QTextCodec::codecForName("UTF-8");
+	return gbkstr->toUnicode(ChineseString);
+}
+
+/*
+void readconfig(const char* buf, const char *key, char *dest)
+{
+	char *mystr=strdup(buf);
+	memset(dest, 0, sizeof(dest));
+	char *p=strtok(mystr, "\n");
+	while (p!=NULL) {
+		if (strncmp(p, key, strlen(key))==0) {
+			strcpy(dest, p+strlen(key));
+			break;
+		}
+		memset(p, 0, sizeof(p));
+		p=strtok(NULL, "\n");
+	}
+	free(mystr);
+}
+*/
+bool ext_check(char* string, char* ext)
+{
+	if(!strcmp(string+(strlen(string)-strlen(ext)), ext)) return true;
+	return false;
+}
+
+
+//void ExtremeGUI::getconfig()
+void getconfig()
+{
+    AppPath=qApp->argv()[0];
+//	printf("app path is '%s'",ctr("AppPath"));
+    ZConfig * config = new ZConfig(QString("%1%2").arg(AppPath).arg("extreme.conf"));
+//	FILE *fp=fopen("/ezxlocal/download/appwrite/setup/ezx_system.cfg", "rt");
+//	if (fp!=NULL){
+	    ZConfig * a = new ZConfig("/ezxlocal/download/appwrite/setup/ezx_system.cfg",false);
+	    QString deflng=a->readEntry("", "LanguageType = ","zh-cn");
+//		printf("lng is '%s'\n",deflng);
+//		fclose(fp);
+		delete a;
+//	} else {
+//	    printf("lng error");
+//	    QString deflng=ctr("zh-cn");
+//	}	
+    		
+	txt_view_path=config->readEntry(NULL,txt_view_path,NULL);
+	p7z_path=config->readEntry(NULL,p7z_path,NULL);
+	skin_path=config->readEntry(NULL,skin_path,NULL);
+	
+    FT_PLEASCHOOSE=config->readEntry(QString("deflng"),QString("FT_PLEASCHOOSE"),ctr("FT_PLEASCHOOSE"));
+	POP_PLEASEWAIT=config->readEntry(QString("deflng"),QString("POP_PLEASEWAIT"),ctr("POP_PLEASEWAIT"));
+		
+	POP_NO_7Z=config->readEntry(QString("deflng"),QString("POP_NO_7Z"),ctr("POP_NO_7Z"));
+	POP_ERROR=config->readEntry(QString("deflng"),QString("POP_ERROR"),ctr("POP_ERROR"));
+	
+	POP_BIGFILE_TITLE=config->readEntry(deflng,POP_BIGFILE_TITLE,POP_BIGFILE_TITLE);
+	POP_BIGFILE_TEXT=config->readEntry(deflng,POP_BIGFILE_TEXT,POP_BIGFILE_TEXT);
+	
+	POP_SCRIPT_OPTINON=config->readEntry(deflng,POP_SCRIPT_OPTINON,POP_SCRIPT_OPTINON);
+	FT_RUN=config->readEntry(deflng,FT_RUN,ctr("FT_RUN"));
+	FT_VIEW=config->readEntry(deflng,FT_VIEW,FT_VIEW);
+	
+	POP_SKIN=config->readEntry(deflng,POP_SKIN,POP_SKIN);
+	CONFIRM_INSTALL_SKIN=config->readEntry(deflng,CONFIRM_INSTALL_SKIN,CONFIRM_INSTALL_SKIN);
+	NOTE_INSTALL_SKIN_FINISH=config->readEntry(deflng,NOTE_INSTALL_SKIN_FINISH,NOTE_INSTALL_SKIN_FINISH);
+	
+	POP_FONT_OPTINON=config->readEntry(deflng,POP_FONT_OPTINON,POP_FONT_OPTINON);
+	FT_PREVIEW=config->readEntry(deflng,FT_PREVIEW,FT_PREVIEW);
+	FT_TEST=config->readEntry(deflng,FT_TEST,FT_TEST);
+	FT_MOUNT=config->readEntry(deflng,FT_MOUNT,FT_MOUNT);
+	NOTE_CP_FONT_ERROR=config->readEntry(deflng,NOTE_CP_FONT_ERROR,NOTE_CP_FONT_ERROR);
+	
+
+	
+}
+
+
+/*
+QString ExtremeGUI::lc(const char *key)
+{
+ 	char *app_basedir=qApp->argv()[0];
+	if (locale_buf==NULL) {
+		char linestr[512];
+		char lngfile[512];
+		int lngfilesize=0;
+
+		QFile cfgfile(ctr("/ezxlocal/download/appwrite/setup/ezx_system.cfg"));
+		if (cfgfile.open(IO_ReadOnly)) { // cfg file exists
+			while (cfgfile.readLine(linestr, 512)!=-1) { // readline for cfg file
+				linestr[strlen(linestr)-1]='\0';
+				if (strstr(linestr, "LanguageType = ")==linestr) {
+					sprintf(lngfile, "%s_%s.lng", app_basedir, linestr+15);
+					break;
+				}
+			}
+			cfgfile.close();
+		} else {
+			sprintf(lngfile, "%s_en-us.lng", app_basedir);
+		}
+
+		printf("Debug: lngfile is '%s'\n", lngfile);
+
+		// FIXME: why using QFile again will cause Segementation fault
+		FILE *fp=fopen(lngfile, "r");
+		if (fp!=NULL) {
+			fseek(fp, 0, SEEK_END);
+			lngfilesize=ftell(fp);
+			rewind(fp);
+			locale_buf=(char *)malloc(lngfilesize+1);
+			fread(locale_buf, lngfilesize, 1, fp);
+			printf("Debug: read lngfile '%s'\n", lngfile);
+			//printf("========= readed file (%d): =======\n'%s'=====\n", lngfilesize, locale_buf);
+			fclose(fp);
+		} else {
+			printf("Debug: error get lngfile\n");
+			locale_buf=(char *)malloc(1);
+			locale_buf[0]='\0';
+		}
+	}
+
+	if (locale_buf[0]=='\0') {
+		return ctr(key);
+	}
+
+	char tmp[256];
+	char realkey[64];
+	sprintf(realkey, "%s = ", key);
+	memset(tmp, '\0', 256);
+	readconfig(locale_buf, realkey, tmp);
+
+	if (tmp[0]=='\0') {
+		printf("Debug: error get key '%s'\n", key);
+		return ctr(key);
+	}
+	return ctr(tmp);
+
+}
+
+*/
+
+ExtremeGUI::ExtremeGUI(int argc, char **argv) : ZApplication(argc, argv)
+{
+   /*  sprintf(exec_buffer, "mkdir -p /aa; mkdir -p /aa");
+	printf("Debug: system(%s)\n", exec_buffer);
+	system(exec_buffer);
+   */
+    getconfig();
+	QDir cardDir=QDir(ctr("/mmc/mmca1/.system"));//////////////////////////////////
+	if (cardDir.exists()==true) {
+		CardExist = true;
+	} else {
+		CardExist = false;
+	}
+    
+/*	ExtremePath=getProgramDir();
+	ExtremeConf=new ZConfig(ExtremePath+"extreme.conf");
+	QString txt_view_path=ExtremePath+ExtremeConf->readEntry(NULL, "txt_view_path", NULL);
+	QString p7z_path=ExtremePath+ExtremeConf->readEntry(NULL, "p7z_path", NULL);
+	QString skin_path=ExtremePath+ExtremeConf->readEntry(NULL, "skin_path", NULL);
+*/	
+	
+	pleaseWaitDlg = new ZPopup((ZPopup::POPUP_TYPE_E)1);
+	pleaseWaitDlg->setTitleIcon(iconReader.getIcon("recur_enable_pop.bmp"));
+	pleaseWaitDlg->setTitle(ctr(" "));
+	ZLabel *lb = new ZLabel(POP_PLEASEWAIT, 0, NULL, NULL, 0, (ZSkinService::WidgetClsID)1);
+	pleaseWaitDlg->insertChild(lb);
+
+	setMainWidget(pleaseWaitDlg);
+	
+	if (QFile::exists(ctr("p7z_path"))==false) {
+		ZNoticeDlg *dlg=new ZNoticeDlg((ZNoticeDlg::Type)1, 2000, POP_ERROR, POP_NO_7Z);
+		dlg->setTitleIcon(iconReader.getIcon("error_pop.bmp"));
+		dlg->exec();
+		delete dlg;
+		printf("Debug: 7z not exist!\n");
+		::exit(1);
+	}
+	
+	char filename[128];
+	char dirname[384];
+	int cutPoint=basename(argv[2]);
+	sprintf(filename, argv[2]+cutPoint);
+	sprintf(dirname, argv[2]);
+	dirname[cutPoint-1]='\0';
+
+	QFile myfile(ctr(argv[2]));
+	//printf("Debug: filesize: %d\n", myfile.size());
+	if(myfile.size()>50000000)
+	{
+		ZMessageDlg *bigFileDlg = new ZMessageDlg(POP_BIGFILE_TITLE,
+											POP_BIGFILE_TEXT+ctr(filename)+" ?",
+											(ZMessageDlg::MessageDlgType)1);
+		int ret=bigFileDlg->exec();
+		delete bigFileDlg;
+		if (ret!=1)
+		{
+			::exit(0);
+		}
+	}    
+
+	if(ext_check(argv[2], ".lin") || ext_check(argv[2], ".sh"))
+	    scr_opt();
+    else if (ext_check(argv[2], ".mgs"))
+        skin_install();
+    else if (ext_check(argv[2], ".ttf") || ext_check(argv[2], ".tttc")) 
+        font_opt();             
+}
+
+
+void ExtremeGUI::system_exec()
+{
+	if (exec_buffer[0]=='\0') {
+		printf("Debug: invalid system_exec() call\n");
+		pleaseWaitDlg->hide();
+		::exit(1);
+	}
+
+	printf("Debug: system(%s)\n", exec_buffer);
+	strcat(exec_buffer, " > /tmp/exec.log 2>&1");
+	int ret=system(exec_buffer);
+	ret>>=8;
+	memset(exec_buffer, 0, 512);
+	printf("Debug: system_exec() finished [%d]\n", ret);
+	pleaseWaitDlg->hide();
+
+	if (ret!=0) {
+		QFile execlog("/tmp/exec.log");
+		char *logContent=NULL;
+		uint logSize=execlog.size();
+		QString logString="";
+
+		if (logSize>0 && execlog.open(IO_ReadOnly)) {
+			logContent=(char *)malloc(logSize);
+			execlog.readBlock(logContent, logSize);
+			execlog.close();
+			logString+=ctr(logContent);
+		}
+
+		ZMessageDlg *aboutDlg = new ZMessageDlg(POP_ERROR, logString, (ZMessageDlg::MessageDlgType)2);
+		aboutDlg->setTitleIcon(iconReader.getIcon("error_pop.bmp"));
+		aboutDlg->exec();
+		delete aboutDlg;
+
+		if (logContent!=NULL) free(logContent);
+		
+		isOperationOK = false ;
+		
+		system("cat /tmp/exec.log");
+	    QFile::remove("/tmp/exec.log");
+		::exit(0);
+	} else {
+	    isOperationOK = true ;
+	}         
+}
+
+void ExtremeGUI::scr_opt()
+{
+    scrDlg = new ZSingleSelectDlg(POP_SCRIPT_OPTINON, FT_PLEASCHOOSE);
+	QStringList strlist;
+	strlist+=FT_RUN;
+	strlist+=FT_VIEW;
+	scrDlg->addItemsList(strlist);
+	scrDlg->setTitleIcon(iconReader.getIcon("save_pop.bmp"));
+	scrDlg->exec();
+	int ret=scrDlg->getCheckedItemIndex();
+	delete scrDlg;
+	if (ret==0){
+	    sprintf(exec_buffer,"chmod +x '%s'; exec '%s' &", argv()[2], argv()[2]);
+	    printf("Debug: system%s\n", exec_buffer);
+	} else if (ret==1){
+        sprintf(exec_buffer, "exec '%s' -d '%s' &", ctr("txt_view_path"), argv()[2]);
+	    printf("Debug: system%s\n", exec_buffer);
+	} else {
+		::exit(0);	
+	}	
+	system(exec_buffer);
+	::exit(0);
+}
+
+void ExtremeGUI::skin_install()
+{
+    skinDlg = new ZMessageDlg(POP_SKIN, CONFIRM_INSTALL_SKIN, (ZMessageDlg::MessageDlgType)1);
+    int ret=skinDlg->exec();
+	delete skinDlg;
+	if (ret==0)
+	    ::exit(0);
+	else if (ret==1){
+        sprintf(exec_buffer,"'%s'/7z x '%s' -o'%s' -y", ctr("p7z_path"), argv()[2], skin_path);
+		printf("Debug: system%s\n", exec_buffer);
+		//int ret2=system(exec_buffer);
+		//return ret2;
+		//printf("Debuge::system ret is %d\n", ret2);
+		//if (ret2!=0) {
+		//    showError;
+		//	::exit(1);
+		//}	
+		//::exit(0);
+		pleaseWaitDlg->show();
+		QTimer::singleShot(10, this, SLOT(system_exec()));
+		
+		if(isOperationOK) {
+		    ZNoticeDlg * a = new ZNoticeDlg((ZNoticeDlg::Type)0,
+                              NOTE_INSTALL_SKIN_FINISH, "");
+			a->exec();				
+			delete a;
+		}		
+	} else 
+        ::exit(0);	
+	::exit(0);	
+}
+
+void ExtremeGUI::font_opt()
+{
+    fontDlg = new ZSingleSelectDlg(POP_FONT_OPTINON, FT_PLEASCHOOSE);
+	QStringList strlist;
+	strlist+=FT_PREVIEW;
+	strlist+=FT_TEST;
+	strlist+=FT_MOUNT;
+	fontDlg->addItemsList(strlist);
+	fontDlg->setTitleIcon("save_pop.bmp");
+	fontDlg->exec();
+	int ret=fontDlg->getCheckedItemIndex();
+	delete fontDlg;
+	if (ret==0){
+	    sprintf(exec_buffer, "chmod +x '%s'; mount -o bind '%s' /usr/languge/font/AMSCL.TTF", argv()[2], argv()[2]);
+		printf("Debug: system%s\n", exec_buffer);
+		system(exec_buffer);
+		ZMessageDlg * a = new ZMessageDlg(ctr("字体预览(Font Preview)"),ctr("中文字型范例\nABCDEFGHIJKLMNOPQTSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n欢迎使用Phonex修改包!\nWlecome to use this modded MP by wanggjghost!"), (ZMessageDlg::MessageDlgType)2);
+		a->exec();							  
+        delete a;
+		printf("Debug: umount font\n");
+		system("umount /usr/languge/font/AMSCL.TTF");
+	} else if (ret==1) {
+        sprintf(exec_buffer, "chmod +x '%s'; mount -o bind '%s' /usr/languge/font/AMSCL.TTF &", argv()[2], argv()[2]);
+		printf("Debug: system%s\n", exec_buffer);
+		system(exec_buffer);
+	} else if (ret==2) {
+        sprintf(exec_buffer, "chmod +x '%s'; mv -f '%s' /ezxlocal/download/mystuff/unKnown/myfont.ttf", argv()[2], argv()[2]);
+		printf("Debug: system%s\n", exec_buffer);	
+		//int ret2=system(exec_buffer);
+		//return ret2;          
+       // printf("ret2 is %d\n", ret2);  	
+        //    if (ret2!=0) {
+		//	    showError;		
+		//		::exit(1);
+		//	}	
+		pleaseWaitDlg->show();
+		QTimer::singleShot(10, this, SLOT(system_exec()));		
+		if(isOperationOK) {
+			system("mount -o bind /ezxlocal/download/mystuff/unKnown/myfont.ttf /usr/languge/font/AMSCL.TTF");
+            sprintf(exec_buffer, "kill `pidof am` ; kill `pidof xp` ; sleep 2s ; kill `pidof phone`");
+		    system(exec_buffer);
+		} else {
+		    ZNoticeDlg * a = new ZNoticeDlg((ZNoticeDlg::Type)0,
+                            NOTE_CP_FONT_ERROR, "");
+			a->exec();				
+			delete a;            		
+		}
+	}	
+	else {
+        ::exit(0);	
+	}	
+    ::exit(0);
+}
+
+
+
+
+
+

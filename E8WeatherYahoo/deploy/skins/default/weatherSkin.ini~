@@ -1,0 +1,11 @@
+[skinConfig]
+bgIconX = 60
+bgIconY = 100
+iconX = 10
+iconY = 60
+cityNameX = 157
+cityNameY = 160
+tempX = 190
+tempY = 130
+cityFontSize = 20
+tempFontSize = 35

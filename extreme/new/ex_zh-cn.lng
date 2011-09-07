@@ -1,0 +1,105 @@
+[info]
+info = lng file for Font Preview /Rork Extreme
+
+[LNG]
+FT_TEST_FONT = 测试字体
+FT_MOUNT_FONT = 挂载字体
+FT_FLASH_FONT = 刷入字体
+FT_REPLACE_FONT = 替换字体
+FT_USAGE = 使用说明
+FT_ABOUT = 关于
+Font Preview = 字体预览
+FT_FONT_NAME = 字体名称：
+FT_FONT_SIZE = 字体大小：
+FT_TEST_AS_MAIN_FONT = 使用为主要字体
+FT_TEST_AS_NUM_FONT = 使用为数字字体
+FT_BIND_TO_PHONE = 挂载于手机内存
+FT_BIND_TO_MMCA2 = 挂载于MMCA2分区
+POP_PLEASE_WAIT = 请等待...
+FT_ERROR = 错误
+FT_TMP_FILE_BIG = 当前字体生成的临时文件大于系统支持的smg大小，程序将自动退出刷入过程。
+FT_ADDING_TMP_FILE = 正在填鸭临时文件至系统smg标准大小。。。
+FT_FLASHING_FONT = 正在刷入。。。
+FT_REPLACEING_FONT = 正在替换。。。
+FT_OK = 完成
+FT_REBOOT_PHONE = 重启系统（如果没有重启成功请手动重启）。
+FT_FLASH_CRAMFS = 使用cramfs刷入
+FT_FLASH_SQUASHFS = 使用squashfs刷入
+FT_FLASH_JFFS2 = 使用jffs2刷入
+FT_MAKING_FLASH_TMP_FILE = 创建临时文件。。。
+FT_NO_ENOUGH_FREE_SPACE = 字体文件过大无法替换
+
+FT_TEST_USAGE = 测试字体     用于检测当前字体是否支持系统，如果发现使用字体后出现无法进入主菜单等情况时，只需要重启手机即可。
+FT_MOUNT_USAGE = 挂载字体    挂载字体将会复制字体至手机/第三分区的字体挂载接口，挂载字体如出现无法进入菜单等情况，需要手动删除字体，或者使用sos急救机制才能恢复。建议在挂载字体之前先使用“测试字体”功能，以检测字体的兼容性。
+FT_FLASH_USAGE = 刷入字体       刷入字体是将字体直接刷入手机内，刷入字体是永久性的，其功能类似于解包后替换字体，或者在可读写包上直接替换字体，刷入字体前请务必检测字体的兼容性，刷入的字体一旦不兼容系统，需要重新刷“语言包”或者重新刷机才能恢复。
+FT_FLASH_TYPE_USAGE = 刷入字体格式简介：cramfs格式具体较快的速度，但是压缩率不高，对于过大的字体文件，可能无法刷入；squashfs格式具有较高的压缩率，适用于较大字体文件的刷入，但是其速度就要偏慢了；jffs2格式具有可读写的功能，其压缩率是三种格式中最低的，jffs2格式需要消耗的内存略多于其他两种格式。
+
+FT_REPLACE_USAGE = 替换字体   替换字体是直接替换系统默认的字体，其功能类似于解包后替换字体，替换字体后无法再恢复为默认的字体，替换字体前请务必检测字体的兼容性，替换的字体一旦不兼容系统，需要重新刷“语言包”或者重新刷机才能恢复。替换字体需要开启系统的可读写权限。
+
+POP_ERROR = 错误
+POP_NO_FILE = 文件不存在!
+POP_PLEASEWAIT = 请等待
+POP_WARNING = 警告
+POP_ACCESS_BIGFILE = 是否仍要操作较大文件 
+POP_OK = 操作成功
+FT_INVALID = 错误
+
+POP_PACKAGE_OPTINON = 压缩文件
+TF_UNPACK_OK = 解压成功
+FT_EXTRACT_PH = 解压到手机
+FT_EXTRACT_SD = 解压到SD卡
+
+POP_SKIN = 主题包 (mgs)
+POP_INSTALLING = 正在安装...
+CONFIRM_INSTALL_SKIN = 是否安装主题包 
+
+FT_PLEASCHOOSE = 请选择
+
+FT_PLEASEWAIT = 请稍候
+
+FT_INSTALLING_SKIN = 正在安装主题 
+FT_SKIN_INSTALL_OK = 主题安装完成.
+
+FT_PHONE = 手机
+FT_MMCA1 = 内存卡
+FT_PART2 = 第二分区
+
+POP_MGX = 应用程序 (mgx)
+FT_INSTALL_PATH = 请选择安装位置
+FT_INSTALLING_MGX = 正在安装程序 
+FT_INSTALL_MGX_FINISH = 程序安装完成.
+
+POP_EXTRACT = 压缩文件
+FT_EXTRACT_PATH = 请选择解压位置
+FT_EXTRACT_HERE = 解压到此处
+FT_EXTRACTING = 正在解压缩 
+FT_EXTRACT_FINISH = 文件解压完成.
+POP_DECOMPRESSING = 正在解压
+FT_DECOMPRESSION_OK = 解压完成
+
+POP_SCRIPT_OPTION = 脚本程序
+FT_RUN = 运行
+FT_VIEW = 查看
+FT_EDIT = 编辑
+FT_RUN_WITH_PARAMETER = 带参数运行
+
+POP_KM_OPTION = 符号文件
+FT_KM_INFO = 只有可写形式时才能替换
+FT_REPLACE = 替换
+POP_QKT_OPTION = 语言文件
+FT_QKT_INFO = 只有可写形式时才能替换
+
+POP_LOGO_OPTION = Logo文件
+FT_FLASH = 刷入logo
+FT_LOGO_TYPE_ERROR = logo文件格式错误,请使用320*240 24bit bmp文件!
+FT_LOGO_FLASH_ERROR = logo刷新过程出错,请重启手机后再试!
+FT_LOGO_FLASH_OK = 已成功替换logo!请重启查看。
+
+FT_SEND_TO_MESG = 发送到短信
+POP_TEXT_OPTION = 文本文档
+FT_NOMP_INFO = Mplayer不存在
+FT_MARS_SKIN = iMars主题
+FT_CONFIRM_INSTALL = 是否安装iMars主题
+
+
+

@@ -1,0 +1,14 @@
+[LNG]
+FT_RUN = 运行
+FT_ABOUT = 关于
+FT_PACK_THEME = 提取主题
+FT_MOVE_THEME = 移动主题
+FT_DELETE_THEME = 删除主题
+FT_SAVE_THEME = 保存主题
+FT_CONFIRM_TO_SAVE = 是否保存当前主题：
+POP_PLEASE_WAIT = 请等待。。。
+FT_CONFIRM_TO_MOVE = 是否确认移动当前主题：
+FT_PHONE = 手机内存
+FT_PART2 = 第三分区
+FT_CONFIRM_DELETE = 是否删除当前主题：
+

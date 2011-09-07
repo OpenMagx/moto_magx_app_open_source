@@ -1,0 +1,84 @@
+// E8 MpkgBox source file by ilove3d
+// keep author information if you redistribute this program
+// Nov. 2008
+// http://moto.it168.com
+
+#ifndef MPKGBOXGUI_H_
+#define MPKGBOXGUI_H_
+#define QT_NO_DRAGANDDROP
+#define QT_NO_PROPERTIES
+
+#include <ZApplication.h>
+#include <ZLabel.h>
+#include <ZMessageDlg.h>
+#include <ZSingleSelectDlg.h>
+#include <ZNoticeDlg.h>
+#include <ZConfig.h>
+#include <ZNoticeDlg.h>
+#include <RES_ICON_Reader.h>
+#include <qtextcodec.h>
+#include <qfile.h>
+#include <qdir.h>
+#include <unistd.h>
+//#include "liblc.hh"
+
+//#define SD_BASE_DIR "/mmc/mmca1/mpkgbox"
+//#define PH_BASE_DIR "/mmc/movinand1/mpkgbox"
+
+/*#define txt_view_path "/usr/SYSqtapp/notepad/notepad"
+#define p7z_path "/usr/data_resource/extra/p7zip"
+#define skin_path "/ezxlocal/download/mystuff/skins"
+*/
+class ExtremeGUI : public ZApplication
+{
+	Q_OBJECT
+	ZPopup *pleaseWaitDlg;
+	ZMessageDlg * skinDlg;
+	ZSingleSelectDlg * scrDlg; 
+	ZSingleSelectDlg * fontDlg;
+//	ZSinglsSelectDlg * kmDlg;
+//	ZSinglsSelectDlg * qktDlg;
+ //   ZConfig * config;
+  
+  
+	RES_ICON_Reader iconReader;
+	
+    QString lc(const char *key);
+	QString AppPath;
+	QString txt_view_path,p7z_path,skin_path;
+	QString FT_PLEASCHOOSE;
+	QString POP_PLEASEWAIT;
+	QString POP_NO_7Z;
+	QString POP_ERROR;
+	QString POP_BIGFILE_TITLE,POP_BIGFILE_TEXT;
+	QString POP_SCRIPT_OPTINON, FT_RUN, FT_VIEW;
+	QString POP_SKIN, CONFIRM_INSTALL_SKIN, NOTE_INSTALL_SKIN_FINISH;
+	QString POP_FONT_OPTINON, FT_PREVIEW, FT_TEST, FT_MOUNT, NOTE_CP_FONT_ERROR;
+	
+	bool CardExist;
+	bool isOperationOK;
+
+	
+public:
+	ExtremeGUI(int argc, char **argv);
+	~ExtremeGUI() {};
+	int basename(char *str) {
+		int ret=0, k=0;
+		for (; str[k]!='\0'; k++) {
+			if (str[k]=='/') ret=k;
+		}
+		return ret+1;
+	}
+	void scr_opt();
+	void skin_install();
+	void font_opt();
+//	void km_opt();
+//	void qkt_opt();
+	void getconfig();
+	//void showError;
+public slots:
+	void system_exec();
+
+};
+#endif
+
