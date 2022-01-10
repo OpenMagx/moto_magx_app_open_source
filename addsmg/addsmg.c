@@ -1,10 +1,16 @@
 /*
- 制作刷机包辅助工具，Version 2.0。
+ 制作刷机包辅助工具，Version 2.1。
         addsmg <file> -head num1 B1 -total total B2
  -head   num1 B1  : 在文件<file>的开头添加num1个ASCII码为B1字节。
  -total total B2  : 在文件<file>的末尾追加ASCII为B2的字节，使文件总长度恰好为total。
  注意：num1，total，B1，B2均为十六进制非负整数，前缀0x可有可无。
- Written by goodluck1982 @ IT168    2007-04-18
+
+ Compile:
+   $ gcc addsmg.c -o addsmg
+   $ gcc -m32 addsmg.c -o addsmg
+
+ Written by goodluck1982 @ IT168               18-Apr-2007
+ Fixed for 64-bit by EXL @ forum.motofan.ru    09-Jan-2022
 */
 
 #include <stdio.h>
@@ -34,10 +40,9 @@ int FileLen(FILE *fp)
 
 int main( int argc, char* argv[])
 {
-  char *smgfile;
+  char *smgfile, *buf;
   unsigned int B1=0,B2=0;
   unsigned long  head=0,total,fh=0,ft=0,i,length;
-  char c,*buf;
   FILE *fp;
 
   if(!(argc==5||argc==8)) showusage();
@@ -48,8 +53,8 @@ int main( int argc, char* argv[])
 
    if(argc==5)
    {
-      if( strcmp(argv[2],"-head")==0 ) { fh=1; sscanf(argv[3],"%x",&head); sscanf(argv[4],"%x",&B1); }
-      else if( strcmp(argv[2],"-total")==0 ) { ft=1; sscanf(argv[3],"%x",&total);  sscanf(argv[4],"%x",&B2);}
+      if( strcmp(argv[2],"-head")==0 ) { fh=1; sscanf(argv[3],"%lx",&head); sscanf(argv[4],"%x",&B1); }
+      else if( strcmp(argv[2],"-total")==0 ) { ft=1; sscanf(argv[3],"%lx",&total);  sscanf(argv[4],"%x",&B2);}
       else showusage();
    }
    else
@@ -57,18 +62,18 @@ int main( int argc, char* argv[])
       if( strcmp(argv[2],"-head")==0 && strcmp(argv[5],"-total")==0 ) 
           {
              fh=ft=1;   
-             sscanf(argv[3],"%x",&head);
-             sscanf(argv[4],"%x",&B1); 
-             sscanf(argv[6],"%x",&total);
-             sscanf(argv[7],"%x",&B2); 
+             sscanf(argv[3],"%lx",&head);
+             sscanf(argv[4],"%x",&B1);
+             sscanf(argv[6],"%lx",&total);
+             sscanf(argv[7],"%x",&B2);
           }
       else if( strcmp(argv[2],"-total")==0 && strcmp(argv[5],"-head")==0 ) 
           {
              fh=ft=1;   
-             sscanf(argv[3],"%x",&total);
-             sscanf(argv[4],"%x",&B2); 
-             sscanf(argv[6],"%x",&head);
-             sscanf(argv[7],"%x",&B1); 
+             sscanf(argv[3],"%lx",&total);
+             sscanf(argv[4],"%x",&B2);
+             sscanf(argv[6],"%lx",&head);
+             sscanf(argv[7],"%x",&B1);
           }
       else showusage();
    }
@@ -82,8 +87,8 @@ int main( int argc, char* argv[])
     length=FileLen(fp);
     if(ft==1&&length+head>total)
     {
-     printf("Error: The origional file length 0x%X plus the header length  0x%X\n",length,head);
-     printf("       have to be less than the total length 0x%X\n",total);
+     printf("Error: The origional file length 0x%lX plus the header length  0x%lX\n",length,head);
+     printf("       have to be less than the total length 0x%lX\n",total);
      exit(4);
     }
 
